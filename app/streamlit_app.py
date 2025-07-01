@@ -27,7 +27,7 @@ def bert_predict(text: str):
 _loaded = None
 def _ensure_local(path_or_gs: str) -> str:
     if path_or_gs.startswith("gs://"):
-        local = pathlib.Path(tempfile.gettempdir()) / pathlib.Path(path_or_gs).nameAdd commentMore actions
+        local = pathlib.Path(tempfile.gettempdir()) / pathlib.Path(path_or_gs).name
         if not local.exists():
             subprocess.check_call(["gsutil", "cp", path_or_gs, str(local)])
         return str(local)
