@@ -1,25 +1,26 @@
-import os, joblib, streamlit as st, pathlib, subprocess, tempfile
+import os
+import joblib
+import streamlit as st
 from google.cloud import aiplatform
+import subprocess, pathlib, tempfile
 
 # ── CONFIG via env-vars ───────────────────────────────────────────────────────
 PROJECT  = os.getenv("PROJECT_ID", "sentiment-analysis-steam")
 REGION   = os.getenv("REGION",     "us-central1")
-EP_BERT  = os.getenv("ENDPOINT_ID_DISTILBERT")  # 18-digit ID
+EP_BERT  = os.getenv("ENDPOINT_ID_DISTILBERT")
 BUNDLE   = os.getenv(
     "LOGREG_BUNDLE_PATH",
     "models/best_tfidf_lr_negRecall_20250630-050145.joblib.gz"
 )
 
-# ── Initialize Vertex client (once) ──────────────────────────────────────────
-aiplatform.init(project=PROJECT, location=REGION)
-_endpoint = aiplatform.Endpoint(EP_BERT)
-
+# ── DistilBERT (Vertex endpoint) ─────────────────────────────────────────────
 def bert_predict(text: str):
     if not EP_BERT:
         return {"error": "ENDPOINT_ID_DISTILBERT not set"}
-    # this automatically wraps your text in the right JSON
-    response = _endpoint.predict(instances=[{"text": text}])
-    # response.predictions is a list; take the first element
+
+    aiplatform.init(project=PROJECT, location=REGION)
+    endpoint = aiplatform.Endpoint(EP_BERT)
+    response = endpoint.predict(instances=[{"text": text}])
     return response.predictions[0]
 
 # ── Log-Reg helper (unchanged) ───────────────────────────────────────────────
