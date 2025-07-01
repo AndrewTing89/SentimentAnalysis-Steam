@@ -7,7 +7,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # copy UI code and tiny model bundle
 COPY app/streamlit_app.py .
-COPY models/*.joblib.gz
+COPY models/*.joblib.gz /app/models/
 
 EXPOSE 8080
 CMD ["streamlit", "run", "/app/streamlit_app.py", "--server.address", "0.0.0.0", "--server.port", "8080"]
