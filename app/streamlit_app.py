@@ -24,7 +24,23 @@ def bert_predict(text: str):
     return response.predictions[0]
 
 # ── Log-Reg helper (unchanged) ───────────────────────────────────────────────
-# … your _ensure_local & logreg_predict here …
+_loaded = None
+def _ensure_local(path_or_gs: str) -> str:
+    if path_or_gs.startswith("gs://"):
+        local = pathlib.Path(tempfile.gettempdir()) / pathlib.Path(path_or_gs).nameAdd commentMore actions
+        if not local.exists():
+            subprocess.check_call(["gsutil", "cp", path_or_gs, str(local)])
+        return str(local)
+    return path_or_gs
+
+def logreg_predict(text: str):
+    global _loaded
+    if _loaded is None:
+        vec, clf = joblib.load(_ensure_local(BUNDLE))
+        _loaded = (vec, clf)
+    vec, clf = _loaded
+    p = clf.predict_proba(vec.transform([text]))[0]  # [neg, pos]
+    return {"label": "POSITIVE" if p[1]>=.5 else "NEGATIVE", "score": float(p[1])}
 
 # ── Streamlit UI (unchanged) ────────────────────────────────────────────────
 st.title("🎮 Steam Review Sentiment Demo")
