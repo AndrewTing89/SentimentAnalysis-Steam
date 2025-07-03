@@ -1,10 +1,6 @@
 # 🎮 Steam Sentiment Analysis
 
 A full-stack demonstration of how to turn raw Steam user reviews into actionable sentiment scores—from initial exploration and classical baselines to Transformer fine-tuning and a serverless web demo on GCP.  
-
-**Live demo & article:**  
-[Medium write-up](https://medium.com/…) • [GitHub repo](https://github.com/AndrewTing89/SentimentAnalysis-Steam)
-
 ---
 
 ## 🚀 Features
