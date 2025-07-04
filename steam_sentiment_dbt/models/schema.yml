@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: stg_steam_reviews
+    columns:
+      - name: language
+        description: "The language code of the review (e.g. 'english', 'russian')"
+
+  - name: final_reviews
+    columns:
+      - name: review
+        description: "The text of the Steam review"
+      - name: language
+        description: "Review language"
+      - name: sentiment
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0,1]
+      - name: game_id
+        description: "Steam AppID for the game"
+      - name: game_name
+        description: "Human-readable game title"

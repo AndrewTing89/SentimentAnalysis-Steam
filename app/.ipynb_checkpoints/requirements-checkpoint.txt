@@ -1,0 +1,8 @@
+streamlit
+scikit-learn
+joblib
+google-auth
+requests
+google-cloud-aiplatform
+google-cloud-bigquery
+pandas

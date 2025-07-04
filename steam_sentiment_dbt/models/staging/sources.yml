@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: steam_reviews            # dbt’s source namespace
+    description: "Raw backfill of top-10 Steam community reviews"
+    database: "{{ target.project }}"   # or literal "sentiment-analysis-steam"
+    schema: "steam_reviews"            # your BQ dataset
+    tables:
+      - name: top10_owned_steamcommunity   # a dbt-safe name (no hyphens!)
+        identifier: "top10-owned-steamcommunity"  
+        description: "Recent-reviews table for the top-10 owned games"
