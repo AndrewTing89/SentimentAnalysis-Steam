@@ -74,7 +74,7 @@ else:
 
     if selected:
         # build safe IN list
-        safe = ",".join(f"'{g.replace(\"'\",\"\\'\")}'" for g in selected)
+        safe = ",".join("'" + g.replace("'", "''") + "'" for g in selected)
         df = run_bigquery(f"""
           SELECT
             game_name,
