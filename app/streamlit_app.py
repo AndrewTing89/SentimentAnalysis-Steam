@@ -1,20 +1,19 @@
 import os
 import joblib
 import streamlit as st
-import google.auth
 from google.cloud import aiplatform, bigquery
 import subprocess, pathlib, tempfile
 import pandas as pd
 
 # ── CONFIG via env-vars ───────────────────────────────────────────────────────
-PROJECT  = os.getenv("PROJECT_ID", "sentiment-analysis-steam")
-REGION   = os.getenv("REGION",     "us-central1")
-EP_BERT  = os.getenv("ENDPOINT_ID_DISTILBERT")
-BUNDLE   = os.getenv(
+PROJECT   = os.getenv("PROJECT_ID", "sentiment-analysis-steam")
+REGION    = os.getenv("REGION",     "us-central1")
+EP_BERT   = os.getenv("ENDPOINT_ID_DISTILBERT")
+BUNDLE    = os.getenv(
     "LOGREG_BUNDLE_PATH",
     "models/best_tfidf_lr_negRecall_20250630-050145.joblib.gz"
 )
-BQ_TABLE = "sentiment-analysis-steam.steam_reviews.top10-owned-steamcommunity"
+BQ_TABLE  = "sentiment-analysis-steam.steam_reviews.top10-owned-steamcommunity"
 
 # ── DistilBERT (Vertex endpoint) ─────────────────────────────────────────────
 def bert_predict(text: str):
@@ -46,13 +45,12 @@ def logreg_predict(text: str):
 
 # ── BigQuery helper ───────────────────────────────────────────────────────────
 def run_bigquery(sql: str) -> pd.DataFrame:
-    # uses application default creds
     client = bigquery.Client(project=PROJECT)
     job    = client.query(sql)
     return job.to_dataframe()
 
 # ── Streamlit UI ─────────────────────────────────────────────────────────────
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Steam Sentiment", layout="wide")
 mode = st.sidebar.radio("Mode", ["Classification", "Dashboard"])
 
 if mode == "Classification":
@@ -63,11 +61,17 @@ if mode == "Classification":
         with col1:
             st.subheader("DistilBERT (Vertex)")
             out = bert_predict(txt)
-            st.write(out if "error" in out else f"**{out['label']}** · {out['score']:.2%}")
+            st.write(
+                out if "error" in out
+                else f"**{out['label']}** · {out['score']:.2%}"
+            )
         with col2:
             st.subheader("Log-Reg (local)")
             out = logreg_predict(txt)
-            st.write(out if "error" in out else f"**{out['label']}** · {out['score']:.2%}")
+            st.write(
+                out if "error" in out
+                else f"**{out['label']}** · {out['score']:.2%}"
+            )
 
 else:
     st.title("📊 Steam Reviews Dashboard")
@@ -78,11 +82,17 @@ else:
       ORDER BY game_name
     """)
     all_games = df_games["game_name"].tolist()
-    selected = st.multiselect("Select games to compare", all_games, default=all_games[:3])
+    selected = st.multiselect(
+        "Select games to compare",
+        all_games,
+        default=all_games[:3]
+    )
 
     if selected:
         # safely escape single quotes and build IN list
-        quoted = ",".join("'" + g.replace("'", "\\'") + "'" for g in selected)
+        quoted = ",".join(
+            "'" + g.replace("'", "\\'") + "'" for g in selected
+        )
         df = run_bigquery(f"""
           SELECT
             game_name,
@@ -99,9 +109,10 @@ else:
         df["pct_neg"] = (df["negative_count"] / df["total"] * 100).round(1)
 
         st.subheader("Sentiment Breakdown")
-        st.dataframe(df[["game_name","pct_pos","pct_neg"]], use_container_width=True)
-
-        # bar chart
+        st.dataframe(
+            df[["game_name","pct_pos","pct_neg"]],
+            use_container_width=True
+        )
         st.bar_chart(
             df.set_index("game_name")[["pct_pos","pct_neg"]],
             height=400
