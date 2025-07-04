@@ -6,3 +6,4 @@ requests
 google-cloud-aiplatform
 google-cloud-bigquery
 pandas
+db-dtypes
