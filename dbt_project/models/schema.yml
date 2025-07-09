@@ -1,0 +1,10 @@
+# dbt_project/models/schema.yml
+version: 2
+
+sources:
+  - name: steam_reviews # The source name, referenced by {{ source('steam_reviews', 'table_name') }}
+    database: "{{ env_var('BQ_PROJECT_ID') }}"
+    schema: "{{ env_var('BQ_DATASET_ID') }}"
+    tables:
+      - name: raw_reviews         # Corresponds to your steam_reviews.raw_reviews BigQuery table
+      - name: kaggle_historical_raw # Corresponds to your steam_reviews.kaggle_historical_raw BigQuery table

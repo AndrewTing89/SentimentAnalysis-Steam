@@ -1,0 +1,455 @@
+App config: GCS_BUCKET_NAME=steam-reviews-bucket-0, BQ_PROJECT_ID=sentiment-analysis-steam, REGION_ENV=us-west1 # Ensure this matches your bucket/project region for BQ dataset location
+Initializing GCS client...
+GCS client initialized.
+Initializing BigQuery client...
+BigQuery client initialized.
+Running ingestion_app.py locally...
+ * Serving Flask app 'ingestion_app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8081
+ * Running on http://10.128.0.7:8081
+Press CTRL+C to quit
+ * Restarting with watchdog (inotify)
+ * Debugger is active!
+ * Debugger PIN: 231-346-449
+127.0.0.1 - - [08/Jul/2025 20:06:38] "GET / HTTP/1.1" 405 -
+App config: GCS_BUCKET_NAME=steam-reviews-bucket-0, BQ_PROJECT_ID=sentiment-analysis-steam, REGION_ENV=us-west1 # Ensure this matches your bucket/project region for BQ dataset location
+Initializing GCS client...
+GCS client initialized.
+Initializing BigQuery client...
+BigQuery client initialized.
+Running ingestion_app.py locally...
+Starting data ingestion process to BigQuery...
+Ensuring BigQuery dataset steam_reviews exists in location us-west1 # Ensure this matches your bucket/project region for BQ dataset location...
+Dataset steam_reviews already exists.
+Ensuring BigQuery table raw_reviews exists...
+Created table raw_reviews.
+Fetching top 10 Steam games from SteamSpy...
+Top 10 Steam Games by all-time owners:
+ • 730: Counter-Strike: Global Offensive (owners ≈ 100,000,000 .. 200,000,000)
+ • 1172470: Apex Legends (owners ≈ 100,000,000 .. 200,000,000)
+ • 578080: PUBG: BATTLEGROUNDS (owners ≈ 100,000,000 .. 200,000,000)
+ • 1623730: Palworld (owners ≈ 50,000,000 .. 100,000,000)
+ • 440: Team Fortress 2 (owners ≈ 50,000,000 .. 100,000,000)
+ • 1938090: Call of Duty: Modern Warfare II (owners ≈ 50,000,000 .. 100,000,000)
+ • 1063730: New World: Aeternum (owners ≈ 50,000,000 .. 100,000,000)
+ • 2358720: Black Myth: Wukong (owners ≈ 50,000,000 .. 100,000,000)
+ • 271590: Grand Theft Auto V Legacy (owners ≈ 50,000,000 .. 100,000,000)
+ • 550: Left 4 Dead 2 (owners ≈ 50,000,000 .. 100,000,000)
+Fetching raw recent reviews for Counter-Strike: Global Offensive (AppID: 730)...
+→ Counter-Strike: Global Offensive: page 1/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 2/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 3/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 4/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 5/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 6/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 7/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 8/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 9/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 10/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 11/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 12/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 13/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 14/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 15/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 16/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 17/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 18/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 19/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 20/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 21/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 22/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 23/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 24/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 25/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 26/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 27/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 28/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 29/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 30/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 31/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 32/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 33/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 34/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 35/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 36/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 37/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 38/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 39/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 40/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 41/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 42/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 43/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 44/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 45/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 46/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 47/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 48/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 49/50, got 100 reviews.
+→ Counter-Strike: Global Offensive: page 50/50, got 100 reviews.
+✅ Done: fetched 5,000 raw reviews for Counter-Strike: Global Offensive
+Fetching raw recent reviews for Apex Legends (AppID: 1172470)...
+→ Apex Legends: page 1/50, got 100 reviews.
+→ Apex Legends: page 2/50, got 100 reviews.
+→ Apex Legends: page 3/50, got 100 reviews.
+→ Apex Legends: page 4/50, got 100 reviews.
+→ Apex Legends: page 5/50, got 100 reviews.
+→ Apex Legends: page 6/50, got 100 reviews.
+→ Apex Legends: page 7/50, got 100 reviews.
+→ Apex Legends: page 8/50, got 100 reviews.
+→ Apex Legends: page 9/50, got 100 reviews.
+→ Apex Legends: page 10/50, got 100 reviews.
+→ Apex Legends: page 11/50, got 21 reviews.
+→ Apex Legends: no reviews on page 12, stopping.
+✅ Done: fetched 1,021 raw reviews for Apex Legends
+Fetching raw recent reviews for PUBG: BATTLEGROUNDS (AppID: 578080)...
+→ PUBG: BATTLEGROUNDS: page 1/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 2/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 3/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 4/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 5/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 6/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 7/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 8/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 9/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 10/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 11/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 12/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 13/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 14/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 15/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 16/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 17/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 18/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 19/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 20/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 21/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 22/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 23/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 24/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 25/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 26/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 27/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 28/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 29/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 30/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 31/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 32/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 33/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 34/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 35/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 36/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 37/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 38/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 39/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 40/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 41/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 42/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 43/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 44/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 45/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 46/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 47/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 48/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 49/50, got 100 reviews.
+→ PUBG: BATTLEGROUNDS: page 50/50, got 100 reviews.
+✅ Done: fetched 5,000 raw reviews for PUBG: BATTLEGROUNDS
+Fetching raw recent reviews for Palworld (AppID: 1623730)...
+→ Palworld: page 1/50, got 100 reviews.
+→ Palworld: page 2/50, got 100 reviews.
+→ Palworld: page 3/50, got 100 reviews.
+→ Palworld: page 4/50, got 100 reviews.
+→ Palworld: page 5/50, got 100 reviews.
+→ Palworld: page 6/50, got 100 reviews.
+→ Palworld: page 7/50, got 100 reviews.
+→ Palworld: page 8/50, got 100 reviews.
+→ Palworld: page 9/50, got 100 reviews.
+→ Palworld: page 10/50, got 100 reviews.
+→ Palworld: page 11/50, got 100 reviews.
+→ Palworld: page 12/50, got 100 reviews.
+→ Palworld: page 13/50, got 100 reviews.
+→ Palworld: page 14/50, got 100 reviews.
+→ Palworld: page 15/50, got 100 reviews.
+→ Palworld: page 16/50, got 100 reviews.
+→ Palworld: page 17/50, got 100 reviews.
+→ Palworld: page 18/50, got 100 reviews.
+→ Palworld: page 19/50, got 100 reviews.
+→ Palworld: page 20/50, got 100 reviews.
+→ Palworld: page 21/50, got 100 reviews.
+→ Palworld: page 22/50, got 100 reviews.
+→ Palworld: page 23/50, got 100 reviews.
+→ Palworld: page 24/50, got 100 reviews.
+→ Palworld: page 25/50, got 100 reviews.
+→ Palworld: page 26/50, got 100 reviews.
+→ Palworld: page 27/50, got 100 reviews.
+→ Palworld: page 28/50, got 100 reviews.
+→ Palworld: page 29/50, got 100 reviews.
+→ Palworld: page 30/50, got 100 reviews.
+→ Palworld: page 31/50, got 100 reviews.
+→ Palworld: page 32/50, got 100 reviews.
+→ Palworld: page 33/50, got 100 reviews.
+→ Palworld: page 34/50, got 100 reviews.
+→ Palworld: page 35/50, got 100 reviews.
+→ Palworld: page 36/50, got 100 reviews.
+→ Palworld: page 37/50, got 100 reviews.
+→ Palworld: page 38/50, got 100 reviews.
+→ Palworld: page 39/50, got 100 reviews.
+→ Palworld: page 40/50, got 100 reviews.
+→ Palworld: page 41/50, got 100 reviews.
+→ Palworld: page 42/50, got 100 reviews.
+→ Palworld: page 43/50, got 100 reviews.
+→ Palworld: page 44/50, got 100 reviews.
+→ Palworld: page 45/50, got 100 reviews.
+→ Palworld: page 46/50, got 100 reviews.
+→ Palworld: page 47/50, got 100 reviews.
+→ Palworld: page 48/50, got 100 reviews.
+→ Palworld: page 49/50, got 100 reviews.
+→ Palworld: page 50/50, got 100 reviews.
+✅ Done: fetched 5,000 raw reviews for Palworld
+Fetching raw recent reviews for Team Fortress 2 (AppID: 440)...
+→ Team Fortress 2: page 1/50, got 100 reviews.
+→ Team Fortress 2: page 2/50, got 100 reviews.
+→ Team Fortress 2: page 3/50, got 100 reviews.
+→ Team Fortress 2: page 4/50, got 100 reviews.
+→ Team Fortress 2: page 5/50, got 100 reviews.
+→ Team Fortress 2: page 6/50, got 100 reviews.
+→ Team Fortress 2: page 7/50, got 100 reviews.
+→ Team Fortress 2: page 8/50, got 100 reviews.
+→ Team Fortress 2: page 9/50, got 100 reviews.
+→ Team Fortress 2: page 10/50, got 100 reviews.
+→ Team Fortress 2: page 11/50, got 100 reviews.
+→ Team Fortress 2: page 12/50, got 100 reviews.
+→ Team Fortress 2: page 13/50, got 100 reviews.
+→ Team Fortress 2: page 14/50, got 100 reviews.
+→ Team Fortress 2: page 15/50, got 100 reviews.
+→ Team Fortress 2: page 16/50, got 100 reviews.
+→ Team Fortress 2: page 17/50, got 100 reviews.
+→ Team Fortress 2: page 18/50, got 100 reviews.
+→ Team Fortress 2: page 19/50, got 100 reviews.
+→ Team Fortress 2: page 20/50, got 100 reviews.
+→ Team Fortress 2: page 21/50, got 100 reviews.
+→ Team Fortress 2: page 22/50, got 100 reviews.
+→ Team Fortress 2: page 23/50, got 100 reviews.
+→ Team Fortress 2: page 24/50, got 100 reviews.
+→ Team Fortress 2: page 25/50, got 100 reviews.
+→ Team Fortress 2: page 26/50, got 100 reviews.
+→ Team Fortress 2: page 27/50, got 100 reviews.
+→ Team Fortress 2: page 28/50, got 100 reviews.
+→ Team Fortress 2: page 29/50, got 100 reviews.
+→ Team Fortress 2: page 30/50, got 100 reviews.
+→ Team Fortress 2: page 31/50, got 100 reviews.
+→ Team Fortress 2: page 32/50, got 100 reviews.
+→ Team Fortress 2: page 33/50, got 100 reviews.
+→ Team Fortress 2: page 34/50, got 100 reviews.
+→ Team Fortress 2: page 35/50, got 100 reviews.
+→ Team Fortress 2: page 36/50, got 100 reviews.
+→ Team Fortress 2: page 37/50, got 100 reviews.
+→ Team Fortress 2: page 38/50, got 100 reviews.
+→ Team Fortress 2: page 39/50, got 100 reviews.
+→ Team Fortress 2: page 40/50, got 100 reviews.
+→ Team Fortress 2: page 41/50, got 100 reviews.
+→ Team Fortress 2: page 42/50, got 100 reviews.
+→ Team Fortress 2: page 43/50, got 100 reviews.
+→ Team Fortress 2: page 44/50, got 100 reviews.
+→ Team Fortress 2: page 45/50, got 100 reviews.
+→ Team Fortress 2: page 46/50, got 100 reviews.
+→ Team Fortress 2: page 47/50, got 100 reviews.
+→ Team Fortress 2: page 48/50, got 100 reviews.
+→ Team Fortress 2: page 49/50, got 100 reviews.
+→ Team Fortress 2: page 50/50, got 100 reviews.
+✅ Done: fetched 5,000 raw reviews for Team Fortress 2
+Fetching raw recent reviews for Call of Duty: Modern Warfare II (AppID: 1938090)...
+→ Call of Duty: Modern Warfare II: page 1/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 2/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 3/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 4/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 5/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 6/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 7/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 8/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 9/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 10/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 11/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 12/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 13/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 14/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 15/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 16/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 17/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 18/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 19/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 20/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 21/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 22/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 23/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 24/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 25/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 26/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 27/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 28/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 29/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 30/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 31/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 32/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 33/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 34/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 35/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 36/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 37/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 38/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 39/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 40/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 41/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 42/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 43/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 44/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 45/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 46/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 47/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 48/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 49/50, got 100 reviews.
+→ Call of Duty: Modern Warfare II: page 50/50, got 100 reviews.
+✅ Done: fetched 5,000 raw reviews for Call of Duty: Modern Warfare II
+Fetching raw recent reviews for New World: Aeternum (AppID: 1063730)...
+→ New World: Aeternum: page 1/50, got 100 reviews.
+→ New World: Aeternum: page 2/50, got 100 reviews.
+→ New World: Aeternum: page 3/50, got 100 reviews.
+→ New World: Aeternum: page 4/50, got 100 reviews.
+→ New World: Aeternum: page 5/50, got 100 reviews.
+→ New World: Aeternum: page 6/50, got 100 reviews.
+→ New World: Aeternum: page 7/50, got 100 reviews.
+→ New World: Aeternum: page 8/50, got 100 reviews.
+→ New World: Aeternum: page 9/50, got 100 reviews.
+→ New World: Aeternum: page 10/50, got 100 reviews.
+→ New World: Aeternum: page 11/50, got 100 reviews.
+→ New World: Aeternum: page 12/50, got 100 reviews.
+→ New World: Aeternum: page 13/50, got 100 reviews.
+→ New World: Aeternum: page 14/50, got 100 reviews.
+→ New World: Aeternum: page 15/50, got 100 reviews.
+→ New World: Aeternum: page 16/50, got 100 reviews.
+→ New World: Aeternum: page 17/50, got 100 reviews.
+→ New World: Aeternum: page 18/50, got 100 reviews.
+→ New World: Aeternum: page 19/50, got 100 reviews.
+→ New World: Aeternum: page 20/50, got 100 reviews.
+→ New World: Aeternum: page 21/50, got 100 reviews.
+→ New World: Aeternum: page 22/50, got 100 reviews.
+→ New World: Aeternum: page 23/50, got 100 reviews.
+→ New World: Aeternum: page 24/50, got 100 reviews.
+→ New World: Aeternum: page 25/50, got 100 reviews.
+→ New World: Aeternum: page 26/50, got 100 reviews.
+→ New World: Aeternum: page 27/50, got 100 reviews.
+→ New World: Aeternum: page 28/50, got 100 reviews.
+→ New World: Aeternum: page 29/50, got 100 reviews.
+→ New World: Aeternum: page 30/50, got 100 reviews.
+→ New World: Aeternum: page 31/50, got 100 reviews.
+→ New World: Aeternum: page 32/50, got 100 reviews.
+→ New World: Aeternum: page 33/50, got 100 reviews.
+→ New World: Aeternum: page 34/50, got 100 reviews.
+→ New World: Aeternum: page 35/50, got 100 reviews.
+→ New World: Aeternum: page 36/50, got 100 reviews.
+→ New World: Aeternum: page 37/50, got 100 reviews.
+→ New World: Aeternum: page 38/50, got 100 reviews.
+→ New World: Aeternum: page 39/50, got 100 reviews.
+→ New World: Aeternum: page 40/50, got 100 reviews.
+→ New World: Aeternum: page 41/50, got 100 reviews.
+→ New World: Aeternum: page 42/50, got 100 reviews.
+→ New World: Aeternum: page 43/50, got 100 reviews.
+→ New World: Aeternum: page 44/50, got 100 reviews.
+→ New World: Aeternum: page 45/50, got 100 reviews.
+→ New World: Aeternum: page 46/50, got 100 reviews.
+→ New World: Aeternum: page 47/50, got 100 reviews.
+→ New World: Aeternum: page 48/50, got 100 reviews.
+→ New World: Aeternum: page 49/50, got 100 reviews.
+→ New World: Aeternum: page 50/50, got 100 reviews.
+✅ Done: fetched 5,000 raw reviews for New World: Aeternum
+Fetching raw recent reviews for Black Myth: Wukong (AppID: 2358720)...
+→ Black Myth: Wukong: page 1/50, got 100 reviews.
+→ Black Myth: Wukong: page 2/50, got 100 reviews.
+→ Black Myth: Wukong: page 3/50, got 100 reviews.
+→ Black Myth: Wukong: page 4/50, got 100 reviews.
+→ Black Myth: Wukong: page 5/50, got 100 reviews.
+→ Black Myth: Wukong: page 6/50, got 100 reviews.
+→ Black Myth: Wukong: page 7/50, got 100 reviews.
+→ Black Myth: Wukong: page 8/50, got 100 reviews.
+→ Black Myth: Wukong: page 9/50, got 100 reviews.
+→ Black Myth: Wukong: page 10/50, got 100 reviews.
+→ Black Myth: Wukong: page 11/50, got 100 reviews.
+→ Black Myth: Wukong: page 12/50, got 100 reviews.
+→ Black Myth: Wukong: page 13/50, got 100 reviews.
+→ Black Myth: Wukong: page 14/50, got 100 reviews.
+→ Black Myth: Wukong: page 15/50, got 100 reviews.
+→ Black Myth: Wukong: page 16/50, got 100 reviews.
+→ Black Myth: Wukong: page 17/50, got 100 reviews.
+→ Black Myth: Wukong: page 18/50, got 100 reviews.
+→ Black Myth: Wukong: page 19/50, got 100 reviews.
+→ Black Myth: Wukong: page 20/50, got 100 reviews.
+→ Black Myth: Wukong: page 21/50, got 100 reviews.
+→ Black Myth: Wukong: page 22/50, got 100 reviews.
+→ Black Myth: Wukong: page 23/50, got 100 reviews.
+→ Black Myth: Wukong: page 24/50, got 100 reviews.
+→ Black Myth: Wukong: page 25/50, got 100 reviews.
+→ Black Myth: Wukong: page 26/50, got 100 reviews.
+→ Black Myth: Wukong: page 27/50, got 100 reviews.
+→ Black Myth: Wukong: page 28/50, got 100 reviews.
+→ Black Myth: Wukong: page 29/50, got 100 reviews.
+→ Black Myth: Wukong: page 30/50, got 100 reviews.
+→ Black Myth: Wukong: page 31/50, got 100 reviews.
+→ Black Myth: Wukong: page 32/50, got 100 reviews.
+→ Black Myth: Wukong: page 33/50, got 100 reviews.
+→ Black Myth: Wukong: page 34/50, got 100 reviews.
+→ Black Myth: Wukong: page 35/50, got 100 reviews.
+→ Black Myth: Wukong: page 36/50, got 100 reviews.
+→ Black Myth: Wukong: page 37/50, got 100 reviews.
+→ Black Myth: Wukong: page 38/50, got 100 reviews.
+→ Black Myth: Wukong: page 39/50, got 100 reviews.
+→ Black Myth: Wukong: page 40/50, got 100 reviews.
+→ Black Myth: Wukong: page 41/50, got 100 reviews.
+→ Black Myth: Wukong: page 42/50, got 100 reviews.
+→ Black Myth: Wukong: page 43/50, got 100 reviews.
+→ Black Myth: Wukong: page 44/50, got 100 reviews.
+→ Black Myth: Wukong: page 45/50, got 100 reviews.
+→ Black Myth: Wukong: page 46/50, got 100 reviews.
+→ Black Myth: Wukong: page 47/50, got 100 reviews.
+→ Black Myth: Wukong: page 48/50, got 100 reviews.
+→ Black Myth: Wukong: page 49/50, got 100 reviews.
+→ Black Myth: Wukong: page 50/50, got 100 reviews.
+✅ Done: fetched 5,000 raw reviews for Black Myth: Wukong
+Fetching raw recent reviews for Grand Theft Auto V Legacy (AppID: 271590)...
+→ Grand Theft Auto V Legacy: page 1/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 2/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 3/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 4/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 5/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 6/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 7/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 8/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 9/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 10/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 11/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 12/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 13/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 14/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 15/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 16/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 17/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 18/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 19/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 20/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 21/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 22/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 23/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 24/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 25/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 26/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 27/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 28/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 29/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 30/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 31/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 32/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 33/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 34/50, got 100 reviews.
+→ Grand Theft Auto V Legacy: page 35/50, got 100 reviews.
+127.0.0.1 - - [08/Jul/2025 20:13:14] "POST / HTTP/1.1" 200 -

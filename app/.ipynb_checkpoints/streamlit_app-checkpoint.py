@@ -1,142 +1,96 @@
 import os
 import joblib
 import streamlit as st
-import requests, subprocess, pathlib, tempfile
-from google.cloud import bigquery, aiplatform
-from google.auth.transport.requests import AuthorizedSession
-from google.oauth2 import service_account
+from google.cloud import aiplatform, bigquery
+import subprocess, pathlib, tempfile
+import pandas as pd
 
-# ── CONFIG via env-vars ───────────────────────────────────────────────────────
-PROJECT      = os.getenv("PROJECT_ID", "sentiment-analysis-steam")
-REGION       = os.getenv("REGION",     "us-central1")
-EP_BERT      = os.getenv("ENDPOINT_ID_DISTILBERT")
-BUNDLE       = os.getenv("LOGREG_BUNDLE_PATH", "models/best_tfidf_lr_negRecall_20250630-050145.joblib.gz")
-BQ_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", None)
+# ── CONFIG ────────────────────────────────────────────────────────────────────
+PROJECT   = os.getenv("PROJECT_ID",           "sentiment-analysis-steam")
+REGION    = os.getenv("REGION",               "us-central1")
+EP_BERT   = os.getenv("ENDPOINT_ID_DISTILBERT")
+BUNDLE    = os.getenv("LOGREG_BUNDLE_PATH",   "models/best_tfidf_lr_negRecall_20250630-050145.joblib.gz")
+BQ_TABLE  = "sentiment-analysis-steam.steam_reviews.top10-owned-steamcommunity"
 
-# ── AUTH / CLIENTS ────────────────────────────────────────────────────────────
-@st.cache_resource
-def get_bq_client():
-    if BQ_CREDENTIALS:
-        creds = service_account.Credentials.from_service_account_file(BQ_CREDENTIALS)
-        return bigquery.Client(project=PROJECT, credentials=creds)
-    return bigquery.Client(project=PROJECT)
-
-@st.cache_data(ttl=600)
-def fetch_game_list():
-    client = get_bq_client()
-    sql = f"""
-      SELECT DISTINCT game_name
-      FROM `{PROJECT}.steam_reviews.top10_owned_steamcommunity`
-      ORDER BY game_name
-    """
-    return [row.game_name for row in client.query(sql).result()]
-
-@st.cache_data(ttl=300)
-def fetch_sentiment_for(games: list[str]):
-    client = get_bq_client()
-    # build safe IN-clause
-    quoted = ",".join(f"'{g.replace(\"'\",\"\\'\")}'" for g in games)
-    sql = f"""
-      SELECT
-        game_name,
-        COUNTIF(voted_up)   AS positives,
-        COUNT(*) - COUNTIF(voted_up) AS negatives
-      FROM `{PROJECT}.steam_reviews.top10_owned_steamcommunity`
-      WHERE game_name IN ({quoted})
-      GROUP BY game_name
-      ORDER BY game_name
-    """
-    return client.query(sql).to_dataframe()
-
-# ── DistilBERT (Vertex endpoint) ─────────────────────────────────────────────
+# ── DistilBERT inference ─────────────────────────────────────────────────────
 def bert_predict(text: str):
     if not EP_BERT:
         return {"error": "ENDPOINT_ID_DISTILBERT not set"}
     aiplatform.init(project=PROJECT, location=REGION)
     endpoint = aiplatform.Endpoint(EP_BERT)
-    response = endpoint.predict(instances=[{"text": text}])
-    return response.predictions[0]
+    return endpoint.predict(instances=[{"text": text}]).predictions[0]
 
-# ── Log-Reg helper (local) ──────────────────────────────────────────────────
-_loaded = None
-def _ensure_local(path_or_gs: str) -> str:
-    if path_or_gs.startswith("gs://"):
-        local = pathlib.Path(tempfile.gettempdir()) / pathlib.Path(path_or_gs).name
-        if not local.exists():
-            subprocess.check_call(["gsutil", "cp", path_or_gs, str(local)])
-        return str(local)
-    return path_or_gs
-
+# ── LogReg inference (cached) ────────────────────────────────────────────────
+_logreg = None
 def logreg_predict(text: str):
-    global _loaded
-    if _loaded is None:
-        vec, clf = joblib.load(_ensure_local(BUNDLE))
-        _loaded = (vec, clf)
-    vec, clf = _loaded
-    p = clf.predict_proba(vec.transform([text]))[0]
-    return {"label": "POSITIVE" if p[1]>=.5 else "NEGATIVE", "score": float(p[1])}
+    global _logreg
+    if _logreg is None:
+        # download from GCS if needed
+        path = pathlib.Path(tempfile.gettempdir()) / pathlib.Path(BUNDLE).name
+        if str(BUNDLE).startswith("gs://") and not path.exists():
+            subprocess.check_call(["gsutil", "cp", BUNDLE, str(path)])
+        vec, clf = joblib.load(path if path.exists() else BUNDLE)
+        _logreg = (vec, clf)
+    vec, clf = _logreg
+    prob = clf.predict_proba(vec.transform([text]))[0][1]
+    return {"label": "POSITIVE" if prob >= 0.5 else "NEGATIVE", "score": prob}
 
-# ── Streamlit UI ─────────────────────────────────────────────────────────────
-st.title("🎮 Steam Review Sentiment Demo")
+# ── BigQuery helper ───────────────────────────────────────────────────────────
+def run_bigquery(query: str) -> pd.DataFrame:
+    client = bigquery.Client(project=PROJECT)
+    return client.query(query).to_dataframe()
 
-txt = st.text_area("Paste a review ↓", height=160)
-if st.button("Classify") and txt.strip():
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("DistilBERT (Vertex)")
-        out = bert_predict(txt)
-        st.write(out if "error" in out else f"**{out['label']}** · {out['score']:.2%}")
-    with col2:
-        st.subheader("Log-Reg (local)")
-        out = logreg_predict(txt)
-        st.write(out if "error" in out else f"**{out['label']}** · {out['score']:.2%}")
+# ── UI ─────────────────────────────────────────────────────────────────────────
+st.set_page_config(page_title="Steam Sentiment", layout="wide")
+mode = st.sidebar.radio("Choose mode", ["Classify", "Dashboard"])
 
-# ── Dashboard: BigQuery Aggregates ───────────────────────────────────────────
-# ── DASHBOARD ────────────────────────────────────────────────────────────────
-st.header("📊 Review Sentiment Dashboard")
+if mode == "Classify":
+    st.header("🎮 Classify a Steam Review")
+    txt = st.text_area("Paste your review here:", height=150)
+    if st.button("Run"):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader("DistilBERT")
+            out = bert_predict(txt)
+            if "error" in out:
+                st.error(out["error"])
+            else:
+                st.write(f"**{out['label']}** ({out['score']:.1%})")
+        with col2:
+            st.subheader("LogReg")
+            out = logreg_predict(txt)
+            st.write(f"**{out['label']}** ({out['score']:.1%})")
 
-@st.cache_data
-def load_game_list() -> list[str]:
-    client = bigquery.Client()
-    sql = """
+else:
+    st.header("📊 Sentiment Dashboard")
+    # pull distinct games
+    df_games = run_bigquery(f"""
       SELECT DISTINCT game_name
-      FROM `sentiment-analysis-steam.steam_reviews.top10-owned-steamcommunity`
+      FROM `{BQ_TABLE}`
       ORDER BY game_name
-    """
-    df = client.query(sql).to_dataframe()
-    return df["game_name"].tolist()
+    """)
+    choices = df_games["game_name"].tolist()
+    selected = st.multiselect("Pick games:", choices, default=choices[:3])
 
-@st.cache_data
-def get_sentiment_stats(game_name: str) -> tuple[int,int,int]:
-    client = bigquery.Client()
-    sql = """
-      SELECT
-        voted_up AS positive,
-        COUNT(1)   AS cnt
-      FROM `sentiment-analysis-steam.steam_reviews.top10-owned-steamcommunity`
-      WHERE game_name = @game_name
-      GROUP BY positive
-    """
-    job_config = bigquery.QueryJobConfig(
-      query_parameters=[
-        bigquery.ScalarQueryParameter("game_name", "STRING", game_name)
-      ]
-    )
-    df = client.query(sql, job_config=job_config).to_dataframe()
-    total = int(df["cnt"].sum())
-    pos   = int(df.loc[df["positive"] == True,  "cnt"].sum() or 0)
-    neg   = int(df.loc[df["positive"] == False, "cnt"].sum() or 0)
-    return pos, neg, total
+    if selected:
+        # build safe IN list
+        safe = ",".join("'" + g.replace("'", "''") + "'" for g in selected)
+        df = run_bigquery(f"""
+          SELECT
+            game_name,
+            COUNTIF(voted_up)   AS positives,
+            COUNT(*) - COUNTIF(voted_up) AS negatives
+          FROM `{BQ_TABLE}`
+          WHERE game_name IN ({safe})
+          GROUP BY game_name
+        """)
+        df["total"] = df["positives"] + df["negatives"]
+        df["pct_pos"] = (df["positives"]/df["total"]*100).round(1)
+        df["pct_neg"] = (df["negatives"]/df["total"]*100).round(1)
 
-games = load_game_list()
-choice = st.selectbox("Select a game to explore:", ["—"] + games)
-if choice != "—":
-    pos, neg, total = get_sentiment_stats(choice)
-    st.metric("Positive reviews", f"{pos}/{total} ({pos/total:.1%})")
-    st.metric("Negative reviews", f"{neg}/{total} ({neg/total:.1%})")
+        st.dataframe(df[["game_name","pct_pos","pct_neg"]])
+        st.bar_chart(df.set_index("game_name")[["pct_pos","pct_neg"]])
 
-    chart_df = pd.DataFrame({
-      "Sentiment": ["Positive", "Negative"],
-      "Count":     [pos, neg]
-    }).set_index("Sentiment")
-    st.bar_chart(chart_df)
+    else:
+        st.info("Select at least one game above.")
+#

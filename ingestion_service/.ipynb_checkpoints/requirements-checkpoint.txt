@@ -1,0 +1,8 @@
+# ingestion_service/requirements.txt
+flask
+google-cloud-storage
+google-cloud-bigquery # Added for BigQuery operations
+pandas
+requests
+numpy
+gunicorn

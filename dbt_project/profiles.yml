@@ -1,0 +1,12 @@
+# dbt_project/profiles.yml - This tells dbt how to connect to your BigQuery. For Cloud Build, keyfile: null will tell dbt to use the Application Default Credentials (ADC) of the Cloud Build service account (which is the recommended approach for security).
+
+steam_reviews_bq: # This name links to 'profile' in dbt_project.yml
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('BQ_PROJECT_ID') }}" # Your BigQuery project ID from env var
+      dataset: "{{ env_var('BQ_DATASET_ID') }}"  # Your BigQuery Dataset ID from env var
+      threads: 4                                # Number of concurrent dbt operations
+      keyfile: null                             # Use Application Default Credentials (ADC) for authentication

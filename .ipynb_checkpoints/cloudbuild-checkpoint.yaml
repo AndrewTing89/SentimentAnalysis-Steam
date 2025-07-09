@@ -1,0 +1,77 @@
+# cloudbuild.yaml
+# Place this file in your project root: /home/jupyter/SentimentAnalysis-Steam/
+
+steps:
+  - name: 'gcr.io/cloud-builders/git'
+    id: 'clone-dbt-project'
+    # IMPORTANT: Replace with the URL of your Git repository where your 'dbt_project' folder resides.
+    # Cloud Build needs permissions to access this repo (e.g., Cloud Source Repositories, GitHub/GitLab app).
+    args: ['clone', 'https://github.com/YOUR_GITHUB_USER/YOUR_DBT_REPO.git', '/workspace/dbt_project'] 
+    # If your dbt_project is NOT in a Git repo, and you're just submitting local files,
+    # you can REMOVE this 'git clone' step. Cloud Build will automatically copy local files.
+    # If you remove this, ensure the paths below are relative to /workspace/dbt_project/
+    # (e.g., Workdir /workspace/dbt_project and then dbt commands run from there).
+
+  - name: 'gcr.io/${PROJECT_ID}/dbt-steam-reviews-runner:latest' # Your custom dbt runner image
+    id: 'run-dbt-models'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        # Change to dbt project directory
+        # If you removed 'git clone' step and your dbt_project is at the build root,
+        # you might not need this 'cd' or path needs adjustment.
+        # Assuming git clone step creates /workspace/dbt_project/
+        cd /workspace/dbt_project
+
+        # Authenticate dbt to BigQuery using Cloud Build's service account
+        # Cloud Build's default service account (PROJECT_NUMBER@cloudbuild.gserviceaccount.com)
+        # needs BigQuery Data Editor & BigQuery Job User roles on your project.
+        export GOOGLE_APPLICATION_CREDENTIALS=/builder/tool_config/gcloud/bq_auth.json # Standard Cloud Build ADC
+        
+        # Pass environment variables for dbt profiles.yml
+        export BQ_PROJECT_ID=${PROJECT_ID}
+        export BQ_DATASET_ID="steam_reviews" # Your BigQuery Dataset ID
+        
+        echo "Running dbt debug..."
+        dbt debug --profile steam_reviews_bq --target dev # Verify connection
+        echo "Running dbt run..."
+        dbt run --profile steam_reviews_bq --target dev --full-refresh # --full-refresh rebuilds tables, no incremental yet
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'export-cleaned-data-to-gcs'
+    entrypoint: 'bash'
+    args:
+      - -c
+      - |
+        # Set environment variables for the export command
+        export BQ_PROJECT_ID=${PROJECT_ID}
+        export BQ_DATASET_ID="steam_reviews"
+        export BQ_CLEANED_TABLE_ID="cleaned_for_model_training"
+        export GCS_BUCKET_NAME="steam-reviews-bucket-0"
+        export GCS_CLEANED_CSV_PATH="steam_reviews_cleaned.csv" # The target CSV file name in GCS
+
+        echo "Exporting BigQuery table ${BQ_DATASET_ID}.${BQ_CLEANED_TABLE_ID} to GCS: gs://${GCS_BUCKET_NAME}/${GCS_CLEANED_CSV_PATH}"
+        
+        # Ensure the Cloud Build service account has Storage Object Admin role on the GCS bucket.
+        bq --project_id=$BQ_PROJECT_ID extract \
+          --destination_format CSV \
+          --compression GZIP \
+          --field_delimiter ',' \
+          --print_header=True \
+          "${BQ_DATASET_ID}.${BQ_CLEANED_TABLE_ID}" \
+          "gs://${GCS_BUCKET_NAME}/${GCS_CLEANED_CSV_PATH}"
+        echo "✅ Exported BigQuery table to GCS: gs://${GCS_BUCKET_NAME}/${GCS_CLEANED_CSV_PATH}"
+
+options:
+  machineType: 'E2_HIGHCPU_8' # Adjust machine type for dbt run if needed (E2_HIGHCPU_8 has 8 CPUs)
+                              # Or use 'N1_HIGHCPU_8' for more power.
+
+timeout: 1800s # 30 minutes, adjust as needed for dbt run and export
+
+# --- IMPORTANT: Cloud Build Service Account Permissions ---
+# The default Cloud Build service account (PROJECT_NUMBER@cloudbuild.gserviceaccount.com) needs:
+# - BigQuery Data Editor: To create/update tables in BigQuery.
+# - BigQuery Job User: To run BigQuery jobs (queries, loads, exports).
+# - Storage Object Admin: To read/write objects in your GCS bucket.
+# - Source Repository Reader: If cloning from private Git repo.
